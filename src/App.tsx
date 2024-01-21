@@ -13,7 +13,7 @@ function App() {
       <AppBar position="fixed">
         <Toolbar>どじからす 2024</Toolbar>
       </AppBar>
-      <Box mt={12} mx={4}>
+      <Box mt={12} mx={2}>
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Home />} />

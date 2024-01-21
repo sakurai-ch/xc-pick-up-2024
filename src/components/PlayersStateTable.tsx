@@ -19,24 +19,25 @@ function PlayersStateTable(props: {
         >
           <TableHead>
             <TableRow>
-              <TableCell align="center">No</TableCell>
-              <TableCell align="center">トラッカー</TableCell>
-              <TableCell align="center">名前</TableCell>
-              <TableCell align="center">クラス</TableCell>
-              <TableCell align="center">状態</TableCell>
-              <TableCell align="center">距離</TableCell>
-              <TableCell align="center">マップ</TableCell>
-              <TableCell align="center">
+              <TableCell align="center" padding="none">No</TableCell>
+              <TableCell align="center" padding="none">T-No</TableCell>
+              <TableCell align="center" padding="none">名前</TableCell>
+              <TableCell align="center" padding="none">クラス</TableCell>
+              <TableCell align="center" padding="none">状態</TableCell>
+              <TableCell align="center" padding="none">距離</TableCell>
+              <TableCell align="center" padding="none">マップ</TableCell>
+              <TableCell align="center" padding="none">
                 {
                   props.role!="player"
                   ?
                   ""
                   :
-                  "ドライバー"
+                  "担当"
                 }
               </TableCell>
             </TableRow>
           </TableHead>
+
           <TableBody>
             {
               props.players.map((player) => (
@@ -44,13 +45,11 @@ function PlayersStateTable(props: {
                   key={player!.no}
                   sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                 >
-                  <TableCell align="center" component="th" scope="row">
-                    {player!.no}
-                  </TableCell>
-                  <TableCell align="center">{player!.trackerNo}</TableCell>
-                  <TableCell align="center">{player!.playerName}</TableCell>
-                  <TableCell align="center">{player!.gliderClass}</TableCell>
-                  <TableCell align="center">
+                  <TableCell align="center" padding="none">{player!.no}</TableCell>
+                  <TableCell align="center" padding="none">{player!.trackerNo}</TableCell>
+                  <TableCell align="center" padding="none">{player!.playerName!.replace(/\s+/g, "")}</TableCell>
+                  <TableCell align="center" padding="none">{player!.gliderClass}</TableCell>
+                  <TableCell align="center" padding="none">
                     {
                       player!.pickUpState=="未"
                       ?
@@ -63,10 +62,8 @@ function PlayersStateTable(props: {
                       </span>
                     }
                   </TableCell>
-                  <TableCell align="center">
-                    {player!.position}
-                  </TableCell>
-                  <TableCell align="center">
+                  <TableCell align="center" padding="none">{player!.position}</TableCell>
+                  <TableCell align="center" padding="none">
                     {
                       player!.mapUrl
                       ?
@@ -83,7 +80,7 @@ function PlayersStateTable(props: {
                       ""
                     }
                   </TableCell>
-                  <TableCell align="center">
+                  <TableCell align="center" padding="none">
                     {
                       props.role!="player"
                       ?
