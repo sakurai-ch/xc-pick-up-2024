@@ -69,8 +69,11 @@ function PlayersPositionMap(props: {positions: PlayerPosition[]}) {
 
   useEffect(() => {
     setPlayerPositions(props.positions)
-    setMapOption()
   }, [props])
+
+  useEffect(() => {
+    setMapOption()
+  }, [playerPositions])
 
   return (
     <>
