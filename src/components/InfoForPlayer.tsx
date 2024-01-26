@@ -50,6 +50,11 @@ function InfoForPlayer() {
             variant="contained" 
             size="small"
             onClick={fetchPlayers}
+            sx={{ 
+              bgcolor: 'tan', 
+              color: 'black', 
+              '&:hover':{backgroundColor: 'tan'},
+            }}
           >
               更新
           </Button>

@@ -126,6 +126,11 @@ function InfoForDriver() {
             <Button 
               variant="contained" 
               size="small"
+              sx={{ 
+                bgcolor: 'tan', 
+                color: 'black', 
+                '&:hover':{backgroundColor: 'tan'},
+              }}
             >
                 戻る
             </Button>
@@ -138,6 +143,11 @@ function InfoForDriver() {
             variant="contained" 
             size="small"
             onClick={fetchData}
+            sx={{ 
+              bgcolor: 'tan', 
+              color: 'black', 
+              '&:hover':{backgroundColor: 'tan'},
+            }}
           >
               更新
           </Button>

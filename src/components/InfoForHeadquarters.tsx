@@ -113,6 +113,11 @@ function InfoForHeadquarters() {
             <Button 
               variant="contained" 
               size="small"
+              sx={{ 
+                bgcolor: 'tan', 
+                color: 'black', 
+                '&:hover':{backgroundColor: 'tan'},
+              }}
             >
                 戻る
             </Button>
@@ -125,6 +130,11 @@ function InfoForHeadquarters() {
             variant="contained" 
             size="small"
             onClick={fetchPlayers}
+            sx={{ 
+              bgcolor: 'tan', 
+              color: 'black', 
+              '&:hover':{backgroundColor: 'tan'},
+            }}
           >
               更新
           </Button>
@@ -195,6 +205,11 @@ function InfoForHeadquarters() {
                 variant="contained" 
                 size="small"
                 onClick={() => openEditDriverDialog(null)}
+                sx={{ 
+                  bgcolor: 'tan', 
+                  color: 'black', 
+                  '&:hover':{backgroundColor: 'tan'},
+                }}
               >
                   ドライバー作成
               </Button>

@@ -12,7 +12,10 @@ function PlayersStateTable(props: {
 }) {
   return (
     <>
-      <TableContainer component={Paper}>
+      <TableContainer 
+        component={Paper} 
+        sx={{bgcolor:"transparent"}}
+      >
         <Table 
           size="small" 
           aria-label="simple table"
