@@ -37,7 +37,7 @@ function InfoForHeadquarters() {
   const putEditPlayer = (editedPlayer: Player) => {
     axios.put(`${process.env.REACT_APP_API}` + "/players", {
       driver: editedPlayer!.driverName,
-      id: editedPlayer!.no,
+      id: editedPlayer!.id,
       map: editedPlayer!.mapUrl,
       order: null,
       state: editedPlayer!.pickUpState,
@@ -65,6 +65,7 @@ function InfoForHeadquarters() {
       let players: Player[] = []
       response.data.data.map((fetchedPlayer: FetchedPlayer) => {
         players.push({
+          id : fetchedPlayer.id,
           no : fetchedPlayer.no,
           trackerNo: fetchedPlayer.comp_id,
           playerName: fetchedPlayer.name,

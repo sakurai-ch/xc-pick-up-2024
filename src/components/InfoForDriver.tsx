@@ -67,6 +67,7 @@ function InfoForDriver() {
       response.data.data.map((fetchedPlayer: FetchedPlayer) => {
         if(fetchedPlayer?.driver==curtDriver?.driverName && fetchedPlayer?.state!="未"){
           players.push({
+            id : fetchedPlayer.id,
             no : fetchedPlayer.no,
             trackerNo: fetchedPlayer.comp_id,
             playerName: fetchedPlayer.name,
@@ -95,7 +96,7 @@ function InfoForDriver() {
   const putEditPlayer = (editedPlayer: Player) => {
     axios.put(`${process.env.REACT_APP_API}` + "/players", {
       driver: editedPlayer!.driverName,
-      id: editedPlayer!.no,
+      id: editedPlayer!.id,
       map: editedPlayer!.mapUrl,
       order: null,
       state: editedPlayer!.pickUpState,

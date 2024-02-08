@@ -14,6 +14,7 @@ function InfoForPlayer() {
       let playerPositions: PlayerPosition[] = []
       response.data.data.map((fetchedPlayer: FetchedPlayer) => {
           players.push({
+            id : fetchedPlayer.id,
             no : fetchedPlayer.no,
             trackerNo: fetchedPlayer.comp_id,
             playerName: fetchedPlayer.name,

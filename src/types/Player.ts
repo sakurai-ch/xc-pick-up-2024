@@ -14,6 +14,7 @@ export type FetchedPlayer = {
 }
 
 export type Player = {
+  id: number | undefined,
   no: number | undefined,
   trackerNo: number | undefined,
   playerName: string | undefined,
