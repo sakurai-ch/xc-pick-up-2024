@@ -65,7 +65,9 @@ function PlayersStateTable(props: {
                       </span>
                     }
                   </TableCell>
-                  <TableCell align="center" padding="none">{player!.position}</TableCell>
+                  <TableCell align="center" padding="none">
+                    {player!.position ? player!.position : ""}
+                  </TableCell>
                   <TableCell align="center" padding="none">
                     {
                       player!.mapUrl
@@ -76,7 +78,7 @@ function PlayersStateTable(props: {
                           target="_blank"
                           style={{color:"gray"}}
                         >
-                          <FmdGoodIcon></FmdGoodIcon>
+                          <FmdGoodIcon fontSize="small"></FmdGoodIcon>
                         </a>
                       )
                       :
@@ -91,6 +93,7 @@ function PlayersStateTable(props: {
                         <EditIcon 
                           onClick={() => props.selectFunc(player)}
                           style={{cursor:"pointer", color:"gray"}}
+                          fontSize="small"
                         ></EditIcon>
                       )
                       :

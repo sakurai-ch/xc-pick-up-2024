@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios';
-import { Button, Container, Grid, Stack } from '@mui/material';
+import { Button, CircularProgress, Container, Grid, Stack } from '@mui/material';
 import { FetchedPlayer, Player } from '../types/Player';
 import { Driver, FetchedDriver } from '../types/Driver';
 import PlayersStateTable from './PlayersStateTable'
@@ -18,10 +18,10 @@ function InfoForHeadquarters() {
   const [editedPlayer, setEditedPlayer] = useState<Player>()
   const [isOpenDriverEditDialog, setIsOpenDriverEditDialog] = useState<boolean>(false)
   const [editedDriver, setEditedDriver] = useState<Driver>()
+  const [isLoading, setIsLoading] = useState<boolean>(false)
 
   // 編集ダイアログを開く
   const openEditPlayerDialog = (editedPlayer:Player) => {
-    fetchPlayers()
     setEditedPlayer(editedPlayer)
     setIsOpenDialog(true)
   }
@@ -30,22 +30,7 @@ function InfoForHeadquarters() {
   const closeEditPlayerDialog = () => {
     setIsOpenDialog(false)
     setEditedPlayer(null)
-    fetchPlayers()
-  }
-
-  // 選手編集データ送信
-  const putEditPlayer = (editedPlayer: Player) => {
-    axios.put(`${process.env.REACT_APP_API}` + "/players", {
-      driver: editedPlayer!.driverName,
-      id: editedPlayer!.id,
-      map: editedPlayer!.mapUrl,
-      order: null,
-      state: editedPlayer!.pickUpState,
-    }).then((response) => {
-      if(response){
-        closeEditPlayerDialog()
-      }
-    })
+    getUpdetedPlayers()
   }
 
   const openEditDriverDialog = (editedDriver:Driver) => {
@@ -57,27 +42,6 @@ function InfoForHeadquarters() {
     setIsOpenDriverEditDialog(false)
     setEditedDriver(null)
     fetchDrivers()
-  }
-
-  // 選手データ取得
-  const fetchPlayers = () => {
-    axios.get(`${process.env.REACT_APP_API}` + "/players").then((response) => {
-      let players: Player[] = []
-      response.data.data.map((fetchedPlayer: FetchedPlayer) => {
-        players.push({
-          id : fetchedPlayer.id,
-          no : fetchedPlayer.no,
-          trackerNo: fetchedPlayer.comp_id,
-          playerName: fetchedPlayer.name,
-          gliderClass: fetchedPlayer.glider_type,
-          pickUpState: fetchedPlayer.state,
-          position: fetchedPlayer.direction + fetchedPlayer.distance,
-          mapUrl: fetchedPlayer.map,
-          driverName: fetchedPlayer.driver,
-        })
-      })
-      setPlayers(players)
-    })
   }
 
   // ドライバーデータ取得
@@ -99,9 +63,32 @@ function InfoForHeadquarters() {
     })
   }
 
+  // live trackデータ更新
+  const getUpdetedPlayers = async () => {
+    setIsLoading(true)
+    await axios.get(`${process.env.REACT_APP_API}` + "/flymaster").then((response) => {
+      let players: Player[] = []
+      response.data.map((fetchedPlayer: FetchedPlayer) => {
+        players.push({
+          id : fetchedPlayer.id,
+          no : fetchedPlayer.no,
+          trackerNo: fetchedPlayer.comp_id,
+          playerName: fetchedPlayer.name,
+          gliderClass: fetchedPlayer.glider_type,
+          pickUpState: fetchedPlayer.state,
+          position: fetchedPlayer.direction + fetchedPlayer.distance,
+          mapUrl: fetchedPlayer.map,
+          driverName: fetchedPlayer.driver,
+        })
+      })
+      setPlayers(players)
+    })
+    setIsLoading(false)
+  }
+
   // データ更新
   useEffect(() => {
-    fetchPlayers()
+    getUpdetedPlayers()
     fetchDrivers()
   }, [])
 
@@ -130,7 +117,8 @@ function InfoForHeadquarters() {
           <Button 
             variant="contained" 
             size="small"
-            onClick={fetchPlayers}
+            // onClick={fetchPlayers}
+            onClick={getUpdetedPlayers}
             sx={{ 
               bgcolor: 'tan', 
               color: 'black', 
@@ -176,9 +164,10 @@ function InfoForHeadquarters() {
                         ■{driver?.driverName}
                       </span>
                       <EditIcon
-                        sx={{ml:2}}
+                        sx={{ml:2, mb:-0.5}}
                         onClick={() => openEditDriverDialog(driver)}
                         style={{cursor:"pointer", color:"gray"}}
+                        fontSize="small"
                       ></EditIcon>
                     </p>
                     <PlayersStateTable 
@@ -225,9 +214,8 @@ function InfoForHeadquarters() {
       <PlayerEditDialog 
         role="headquarters"
         isOpen={isOpenDialog} 
-        selectedPlayer={editedPlayer}
+        selectedPlayerId={editedPlayer?.id}
         selectabledrivers={drivers}
-        editFunc={putEditPlayer}
         closeFunc={closeEditPlayerDialog}
       ></PlayerEditDialog>
 
@@ -237,6 +225,24 @@ function InfoForHeadquarters() {
         selectedDriver={editedDriver}
         closeFunc={closeEditDriverDialog}
       ></DriverEditDialog>
+
+      {
+        isLoading
+        ?
+        (
+          <CircularProgress 
+            sx={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              marginTop: '-12px',
+              marginLeft: '-12px',
+            }}
+          />
+        )
+        :
+        null
+      }
     </Container>
   )
 }

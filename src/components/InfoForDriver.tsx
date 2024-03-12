@@ -6,7 +6,7 @@ import { Driver, FetchedDriver } from '../types/Driver'
 import PlayersStateTable from './PlayersStateTable'
 import PlayersPositionMap from './PlayersPositionMap'
 import PlayerEditDialog from './PlayerEditDialog'
-import { Button, Container, Grid } from '@mui/material'
+import { Button, CircularProgress, Container, Grid } from '@mui/material'
 
 type params = {
   id: string
@@ -22,10 +22,10 @@ function InfoForDriver() {
   const [playerPositions, setPlayerPositions] = useState<PlayerPosition[]>()
   const [isOpenDialog, setIsOpenDialog] = useState<boolean>(false)
   const [editedPlayer, setEditedPlayer] = useState<Player>()
+  const [isLoading, setIsLoading] = useState<boolean>(false)
   
   // 編集ダイアログを開く
   const openEditPlayerDialog = (editedPlayer:Player) => {
-    fetchData()
     setEditedPlayer(editedPlayer)
     setIsOpenDialog(true)
   }
@@ -60,10 +60,11 @@ function InfoForDriver() {
   }
 
   // 選手データ取得
-  const fetchPlayers = () => {
-    axios.get(`${process.env.REACT_APP_API}` + "/players").then((response) => {
-      let players: Player[] = []
-      let playerPositions: PlayerPosition[] = []
+  const fetchPlayers = async() => {
+    setIsLoading(true)
+    let players: Player[] = []
+    let playerPositions: PlayerPosition[] = []
+    await axios.get(`${process.env.REACT_APP_API}` + "/players").then((response) => {
       response.data.data.map((fetchedPlayer: FetchedPlayer) => {
         if(fetchedPlayer?.driver==curtDriver?.driverName && fetchedPlayer?.state!="未"){
           players.push({
@@ -87,24 +88,10 @@ function InfoForDriver() {
           })
         }
       })
-      setPlayers(players)
-      setPlayerPositions(playerPositions)
     })
-  }
-
-  // 選手編集データ送信
-  const putEditPlayer = (editedPlayer: Player) => {
-    axios.put(`${process.env.REACT_APP_API}` + "/players", {
-      driver: editedPlayer!.driverName,
-      id: editedPlayer!.id,
-      map: editedPlayer!.mapUrl,
-      order: null,
-      state: editedPlayer!.pickUpState,
-    }).then((response) => {
-      if(response){
-        closeEditPlayerDialog()
-      }
-    })
+    setPlayers(players)
+    setPlayerPositions(playerPositions)
+    setIsLoading(false)
   }
 
   // データ取得
@@ -180,12 +167,29 @@ function InfoForDriver() {
         <PlayerEditDialog 
           role="driver"
           isOpen={isOpenDialog} 
-          selectedPlayer={editedPlayer}
+          selectedPlayerId={editedPlayer?.id}
           selectabledrivers={[driver!]}
-          editFunc={putEditPlayer}
           closeFunc={closeEditPlayerDialog}
         ></PlayerEditDialog>
       </Grid>
+
+      {
+        isLoading
+        ?
+        (
+          <CircularProgress
+            sx={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              marginTop: '-12px',
+              marginLeft: '-12px',
+            }}
+          />
+        )
+        :
+        null
+      }
     </Container>
   )
 }

@@ -10,8 +10,13 @@ import InfoForPlayer from './components/InfoForPlayer';
 function App() {
   return (
     <>
-      <AppBar position="fixed">
-        <Toolbar>どじからす 2024</Toolbar>
+      <AppBar 
+        position="fixed"
+        sx={{ bgcolor: 'tan', color: 'black'}}
+      >
+        <Toolbar>
+          <h2>2024 どじからす</h2>
+        </Toolbar>
       </AppBar>
       <Box mt={12} mx={2}>
         <BrowserRouter>

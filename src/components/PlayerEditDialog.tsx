@@ -1,20 +1,37 @@
 import React, { useEffect, useState } from 'react'
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, Grid, Radio, RadioGroup, TextField } from '@mui/material'
-import { Player } from '../types/Player'
+import { FetchedPlayer, Player } from '../types/Player'
 import { Driver } from '../types/Driver'
 import { Role } from '../types/Roles'
+import axios from 'axios'
 
 
 function PlayerEditDialog(props:{
   role: Role,
   isOpen:boolean, 
-  selectedPlayer:Player | undefined,
+  selectedPlayerId:Number | undefined,
   selectabledrivers: Driver[] | undefined,
-  editFunc: any,
   closeFunc: any,
 }) {
   const [editedPlayer, setEditedPlayer] = useState<Player>(null)
-  
+
+  const fetchePlayer = () => {
+    axios.get(`${process.env.REACT_APP_API}` + "/players").then((response) => {
+      let fetchedPlayer = response.data.data.find((fetchedPlayer: FetchedPlayer) => fetchedPlayer?.id == props.selectedPlayerId)
+      setEditedPlayer({
+        id : fetchedPlayer.id,
+        no : fetchedPlayer.no,
+        trackerNo: fetchedPlayer.comp_id,
+        playerName: fetchedPlayer.name,
+        gliderClass: fetchedPlayer.glider_type,
+        pickUpState: fetchedPlayer.state,
+        position: fetchedPlayer.direction + fetchedPlayer.distance,
+        mapUrl: fetchedPlayer.map,
+        driverName: fetchedPlayer.driver,
+      })
+    })
+  }
+
   const changePickUpState = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEditedPlayer(player => ({
       ...player!, 
@@ -36,13 +53,26 @@ function PlayerEditDialog(props:{
     }))
   }
 
-  useEffect(() => {
-    setEditedPlayer(props.selectedPlayer!)
-  }, [props.isOpen])
-
+  // 選手編集データ送信
   const putEditPlayer = () => {
-    props.editFunc(editedPlayer)
+    axios.put(`${process.env.REACT_APP_API}` + "/players", {
+      driver: editedPlayer!.driverName,
+      id: editedPlayer!.id,
+      map: editedPlayer!.mapUrl,
+      order: null,
+      state: editedPlayer!.pickUpState,
+    }).then((response) => {
+      if(response){
+        props.closeFunc()
+      }
+    })
   }
+
+  useEffect(() => {
+    if(props.isOpen){
+      fetchePlayer()
+    }
+  }, [props.isOpen])
 
   return (
     <>

@@ -2,13 +2,15 @@ import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { FetchedPlayer, Player, PlayerPosition } from '../types/Player'
 import PlayersStateTable from './PlayersStateTable'
-import { Button, Container, Grid } from '@mui/material'
+import { Button, CircularProgress, Container, Grid } from '@mui/material'
 
 function InfoForPlayer() {
   const [players, setPlayers] = useState<Player[]>()
+  const [isLoading, setIsLoading] = useState<boolean>(false)
 
   // 選手データ取得
   const fetchPlayers = () => {
+    setIsLoading(true)
     axios.get(`${process.env.REACT_APP_API}` + "/players").then((response) => {
       let players: Player[] = []
       let playerPositions: PlayerPosition[] = []
@@ -34,6 +36,7 @@ function InfoForPlayer() {
           })
       })
       setPlayers(players)
+      setIsLoading(false)
     })
   }
 
@@ -68,6 +71,24 @@ function InfoForPlayer() {
         players={players ? players : []}
         selectFunc={""}
       ></PlayersStateTable>
+
+      {
+        isLoading
+        ?
+        (
+          <CircularProgress 
+            sx={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              marginTop: '-12px',
+              marginLeft: '-12px',
+            }}
+          />
+        )
+        :
+        null
+      }
     </Container>
   )
 }
