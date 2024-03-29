@@ -63,7 +63,10 @@ function DriverEditDialog(props:{
         </DialogTitle>
 
         <DialogContent>
-          <p>★選手を配車した状態でドライバー名を変更しないこと</p>
+          <p>
+            ★選手画面には入力した名前の先頭2文字が表示されます<br />
+            ★選手を配車した状態でドライバー名を変更しないこと
+          </p>
           {/* 名前 */}
           <TextField
             margin="normal"
@@ -79,7 +82,7 @@ function DriverEditDialog(props:{
           <TextField
             margin="normal"
             id="name"
-            label="名前（選手画面には先頭2文字のみ表示）"
+            label="名前"
             fullWidth
             variant="standard"
             value={editedDriver ? editedDriver.driverName : ""}
@@ -100,7 +103,7 @@ function DriverEditDialog(props:{
         <DialogActions>
           <Button onClick={props.closeFunc}>キャンセル</Button>
           {
-            editedDriver
+            editedDriver?.no
             ?
             <Button onClick={putEditDriver}>決定</Button>
             :
