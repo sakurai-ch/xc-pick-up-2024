@@ -110,7 +110,10 @@ function InfoForDriver() {
       <Grid justifyContent="space-between" container>
         {/* ホームボタン */}
         <Grid item>
-          <Link to="/">
+          <Link 
+            to="/"
+            style={{textDecoration: "none"}}
+          >
             <Button 
               variant="contained" 
               size="small"

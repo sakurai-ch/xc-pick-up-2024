@@ -15,8 +15,7 @@ function App() {
         sx={{ bgcolor: 'tan', color: 'black'}}
       >
         <Toolbar>
-          {/* <h2>2024 どじからす</h2> */}
-          <h2>2024 スカイグランプリ</h2>
+          <h2>2024 どじからす</h2>
         </Toolbar>
       </AppBar>
       <Box mt={12} mx={2}>
