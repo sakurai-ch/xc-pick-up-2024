@@ -135,9 +135,9 @@ function InfoForDriver() {
             size="small"
             onClick={fetchData}
             sx={{ 
-              bgcolor: 'tan', 
-              color: 'black', 
-              '&:hover':{backgroundColor: 'tan'},
+              bgcolor: 'orangered', 
+              color: 'white', 
+              '&:hover':{backgroundColor: 'orangered'},
             }}
           >
               更新

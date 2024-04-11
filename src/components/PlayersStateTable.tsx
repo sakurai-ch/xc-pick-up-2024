@@ -4,12 +4,20 @@ import { Player } from '../types/Player';
 import FmdGoodIcon from '@mui/icons-material/FmdGood';
 import EditIcon from '@mui/icons-material/Edit';
 import { Role } from '../types/Roles';
+import axios from 'axios';
 
 function PlayersStateTable(props: {
   role: Role,
   players: Player[], 
   selectFunc: any,
 }) {
+  // 現在地取得
+  const getCurMap = (id:Number|undefined) => {
+    axios.get(`${process.env.REACT_APP_API}` + "/curMap?compId=" + id).then((response) => {
+      window.open(response.data, '_blank');
+    })
+  }
+
   return (
     <>
       <TableContainer 
@@ -23,12 +31,23 @@ function PlayersStateTable(props: {
           <TableHead>
             <TableRow>
               <TableCell align="center" padding="none">No</TableCell>
-              <TableCell align="center" padding="none">T-No</TableCell>
+              {/* <TableCell align="center" padding="none">T-No</TableCell> */}
               <TableCell align="center" padding="none">名前</TableCell>
               <TableCell align="center" padding="none">クラス</TableCell>
               <TableCell align="center" padding="none">状態</TableCell>
               <TableCell align="center" padding="none">距離</TableCell>
-              <TableCell align="center" padding="none">マップ</TableCell>
+              <TableCell align="center" padding="none">着地点</TableCell>
+              {
+                props.role!="player"
+                ?
+                (
+                  <TableCell align="center" padding="none">
+                    現在地
+                  </TableCell>
+                )
+                :
+                null
+              }
               <TableCell align="center" padding="none">
                 {
                   props.role!="player"
@@ -49,7 +68,7 @@ function PlayersStateTable(props: {
                   sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                 >
                   <TableCell align="center" padding="none">{player!.no}</TableCell>
-                  <TableCell align="center" padding="none">{player!.trackerNo}</TableCell>
+                  {/* <TableCell align="center" padding="none">{player!.trackerNo}</TableCell> */}
                   <TableCell align="center" padding="none">{player!.playerName!.replace(/\s+/g, "")}</TableCell>
                   <TableCell align="center" padding="none">{player!.gliderClass}</TableCell>
                   <TableCell align="center" padding="none">
@@ -73,18 +92,51 @@ function PlayersStateTable(props: {
                       player!.mapUrl
                       ?
                       (
-                        <a 
-                          href={player!.mapUrl} 
-                          target="_blank"
-                          style={{color:"gray"}}
-                        >
-                          <FmdGoodIcon fontSize="small"></FmdGoodIcon>
-                        </a>
+                        props.role!="driver"
+                        ?
+                        (
+                          <a 
+                            href={player!.mapUrl} 
+                            target="_blank"
+                            style={{color:"tomato"}}
+                          >
+                            <FmdGoodIcon fontSize="small"></FmdGoodIcon>
+                          </a>
+                        )
+                        :
+                        (
+                          <a 
+                            href={player!.mapUrl} 
+                            target="_blank"
+                            style={{color:"tomato"}}
+                          >
+                            <FmdGoodIcon fontSize="large"></FmdGoodIcon>
+                          </a>
+                        )
                       )
                       :
                       ""
                     }
                   </TableCell>
+                  {
+                    props.role!="player"
+                    ?
+                    (
+                      player!.mapUrl
+                      ?
+                      <TableCell align="center" padding="none">
+                        <FmdGoodIcon 
+                          onClick={() => getCurMap(player!.id)}
+                          style={{cursor:"pointer", color:"orange"}}
+                          fontSize="small"
+                        ></FmdGoodIcon>
+                      </TableCell>
+                      :
+                      <TableCell align="center" padding="none"></TableCell>
+                    )
+                    :
+                    null
+                  }
                   <TableCell align="center" padding="none">
                     {
                       props.role!="player"
@@ -92,7 +144,7 @@ function PlayersStateTable(props: {
                       (
                         <EditIcon 
                           onClick={() => props.selectFunc(player)}
-                          style={{cursor:"pointer", color:"gray"}}
+                          style={{cursor:"pointer", color:"cornflowerblue"}}
                           fontSize="small"
                         ></EditIcon>
                       )
