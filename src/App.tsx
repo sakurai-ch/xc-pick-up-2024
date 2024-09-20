@@ -15,7 +15,8 @@ function App() {
         sx={{ bgcolor: 'tan', color: 'black'}}
       >
         <Toolbar>
-          <h2>2024 どじからす</h2>
+          {/* TODO 大会名をAIPから取得できるようにする */}
+          <h2>2024 J1 日本選手権</h2>
         </Toolbar>
       </AppBar>
       <Box mt={12} mx={2}>
