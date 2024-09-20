@@ -92,8 +92,8 @@ function DriverEditDialog(props:{
           {/* 定員 */}
           <TextField
             margin="normal"
-            id="name"
-            label="定員（数値のみ入力可）"
+            id="capacity"
+            label="定員（半角数値のみ入力可）"
             fullWidth
             variant="standard"
             value={editedDriver ? editedDriver.capacity : null}
