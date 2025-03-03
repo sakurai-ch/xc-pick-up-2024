@@ -126,7 +126,7 @@ function PlayersStateTable(props: {
                       ?
                       <TableCell align="center" padding="none">
                         <FmdGoodIcon 
-                          onClick={() => getCurMap(player!.id)}
+                          onClick={() => getCurMap(player!.no)}
                           style={{cursor:"pointer", color:"orange"}}
                           fontSize="small"
                         ></FmdGoodIcon>
