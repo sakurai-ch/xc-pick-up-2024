@@ -6,6 +6,7 @@ import { AppBar, Box, Toolbar } from '@mui/material';
 import InfoForHeadquarters from './components/InfoForHeadquarters';
 import InfoForDriver from './components/InfoForDriver';
 import InfoForPlayer from './components/InfoForPlayer';
+import TitleToolbar from './components/TitleToolbar';
 
 function App() {
   return (
@@ -14,10 +15,7 @@ function App() {
         position="fixed"
         sx={{ bgcolor: 'tan', color: 'black'}}
       >
-        <Toolbar>
-          {/* TODO 大会名をAPIから取得できるようにする */}
-          <h2>2024 Class5 日本選手権</h2>
-        </Toolbar>
+        <TitleToolbar></TitleToolbar>
       </AppBar>
       <Box mt={12} mx={2}>
         <BrowserRouter>
