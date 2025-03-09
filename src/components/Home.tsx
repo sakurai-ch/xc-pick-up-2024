@@ -75,6 +75,19 @@ function Home() {
             選手用
           </Card>
         </Link>
+
+        {/* 管理用 */}
+        <Link 
+          to="/admin" 
+          style={{textDecoration: "none"}}
+        >
+          <Card 
+            sx={{ textAlign: 'center', py: 1,  ml: 'auto', width: 1/4, backgroundColor: "#666666" }} 
+            variant="outlined"
+          >
+            管理用
+          </Card>
+        </Link>
       </Stack>
     </Container>
   )

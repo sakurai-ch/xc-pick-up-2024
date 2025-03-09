@@ -1,1 +1,1 @@
-export type Role = "headquarters" | "driver" | "player"
+export type Role = "headquarters" | "driver" | "player" | "admin"

@@ -6,6 +6,7 @@ import { AppBar, Box, Toolbar } from '@mui/material';
 import InfoForHeadquarters from './components/InfoForHeadquarters';
 import InfoForDriver from './components/InfoForDriver';
 import InfoForPlayer from './components/InfoForPlayer';
+import Administrator from './components/Administrator';
 import TitleToolbar from './components/TitleToolbar';
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
             <Route path="/headquarters" element={<InfoForHeadquarters />} />
             <Route path="/driver/:id" element={<InfoForDriver />} />
             <Route path="/player" element={<InfoForPlayer />} />
+            <Route path="/admin" element={<Administrator />} />
           </Routes>
         </BrowserRouter>
       </Box>
