@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react'
-import { Box, Button, Container, Grid, Input, TextField } from '@mui/material'
+import React, { useEffect, useRef, useState } from 'react'
+import { Box, Button, Container, Grid, TextField } from '@mui/material'
 import axios from 'axios'
 import { Competition } from '../types/Competition'
 import { Link } from 'react-router-dom'
+import { useCSVReader } from "react-papaparse";
 
 function Adminisrtator() {
   // 大会情報
@@ -50,9 +51,26 @@ function Adminisrtator() {
     })
   }
 
-  // useEffect(() => {
-  //   setEditedDriver(props.selectedDriver!)
-  // }, [props.isOpen])
+  // 選手情報
+  const { CSVReader } = useCSVReader();
+  interface CsvRow {[key: string]: string | number | null;}
+  const [jsonData, setJsonData] = useState<CsvRow[]>([]);
+
+  const handleSendData2 = () => {
+    axios.post(`${process.env.REACT_APP_API}` + "/players", 
+      { players : jsonData }, 
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+    .then((response) => {
+      if(response){
+        console.log(response.data.data)
+      }
+    })
+  }
+
 
   return (
     <>
@@ -129,6 +147,78 @@ function Adminisrtator() {
               大会情報登録
             </Button>
           </Box>
+        </Grid>
+      </Container>
+
+      {/* 選手情報 */}
+      <Container disableGutters maxWidth="xs">
+        <Grid item  sx={{mt: 4}}>
+          <Box sx={{fontSize: 'h6.fontSize', fontWeight: 'bold'}}>
+            選手情報
+          </Box>
+
+          {/* react-papaparse */}
+          <CSVReader
+            onUploadAccepted={(results: any) => {
+              setJsonData(results.data)
+            }}
+            config={{
+              encoding: "Shift-JIS",
+              header: true,
+              skipEmptyLines: true
+            }}
+            accept="text/csv"
+          >
+            {({
+              getRootProps,
+              acceptedFile,
+            }: any) => (
+              <>
+                <Grid container spacing={2}>
+                  {/* ファイル選択 */}
+                  <Grid item xs={4}>
+                    <Button 
+                      type='button' 
+                      {...getRootProps()} 
+                      variant="contained" 
+                      size="small"
+                      sx={{ 
+                        bgcolor: 'wheat', 
+                        color: 'black', 
+                        '&:hover':{backgroundColor: 'wheat'},
+                        mt: 2,
+                      }}
+                    >
+                      CSVファイル選択
+                    </Button>
+                  </Grid>
+
+                  {/* ファイル名     */}
+                  <Grid item xs={8}>
+                    <TextField
+                      margin="normal"
+                      sx={{ mt: 0, ml: 0 }}
+                      id="csvFileName"
+                      label=" "
+                      fullWidth
+                      variant="standard"
+                      value={acceptedFile && acceptedFile.name || ""}
+                    ></TextField>
+                  </Grid>
+                </Grid>
+
+                {/* 選手情報登録 */}
+                <Box sx={{display: 'flex', justifyContent: 'flex-end', mt: 1}}>
+                  <Button 
+                    onClick={handleSendData2} 
+                    disabled={jsonData.length === 0}
+                  >
+                    選手情報登録
+                  </Button>
+                </Box>
+              </>
+            )}
+          </CSVReader>
         </Grid>
       </Container>
     </>
