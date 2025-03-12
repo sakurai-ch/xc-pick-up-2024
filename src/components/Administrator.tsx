@@ -101,7 +101,7 @@ function Adminisrtator() {
         {/* 大会情報 */}
         <Grid item>
           <Box sx={{fontSize: 'h6.fontSize', fontWeight: 'bold'}}>
-            大会情報
+            大会情報登録
           </Box>
 
           {/* 大会名 */}
@@ -119,6 +119,7 @@ function Adminisrtator() {
           {/* グループID */}
           <TextField
             margin="normal"
+            sx={{mt: 0}}
             id="competitionGroupId"
             label="グループID（半角数値）"
             fullWidth
@@ -130,6 +131,7 @@ function Adminisrtator() {
           {/* トークン */}
           <TextField
             margin="normal"
+            sx={{mt: 0}}
             id="competitionToken"
             label="トークン"
             fullWidth
@@ -144,7 +146,7 @@ function Adminisrtator() {
               onClick={postCompetition}
               disabled={!(competition.name && Number(competition.groupId) && competition.token)}
             >
-              大会情報登録
+              登録
             </Button>
           </Box>
         </Grid>
@@ -154,7 +156,7 @@ function Adminisrtator() {
       <Container disableGutters maxWidth="xs">
         <Grid item  sx={{mt: 4}}>
           <Box sx={{fontSize: 'h6.fontSize', fontWeight: 'bold'}}>
-            選手情報
+            選手情報登録
           </Box>
 
           {/* react-papaparse */}
@@ -213,12 +215,40 @@ function Adminisrtator() {
                     onClick={handleSendData2} 
                     disabled={jsonData.length === 0}
                   >
-                    選手情報登録
+                    登録
                   </Button>
                 </Box>
               </>
             )}
           </CSVReader>
+        </Grid>
+      </Container>
+
+      {/* ドライバー情報 */}
+      <Container disableGutters maxWidth="xs">
+        <Grid item  sx={{mt: 4}}>
+          <Box sx={{fontSize: 'h6.fontSize', fontWeight: 'bold'}}>
+            ドライバー情報登録
+          </Box>
+
+          <Link
+            to="/headquarters"
+            style={{textDecoration: "none"}}
+          >
+            <Button 
+              variant="contained" 
+              size="small"
+              sx={{ 
+                bgcolor: 'wheat', 
+                color: 'black', 
+                '&:hover':{backgroundColor: 'wheat'},
+                mb: 4,
+                mt: 2,
+              }}
+            >
+                本部画面へ移動
+            </Button>
+          </Link>
         </Grid>
       </Container>
     </>

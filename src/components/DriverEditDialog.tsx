@@ -25,7 +25,7 @@ function DriverEditDialog(props:{
   }
 
   const postEditDriver = () => {
-    axios.post(`${process.env.REACT_APP_API}` + "/drivers", {
+    axios.post(`${process.env.REACT_APP_API}` + "/driver", {
       name: editedDriver!.driverName,
       capacity: editedDriver?.capacity,
     }).then((response) => {
@@ -36,10 +36,25 @@ function DriverEditDialog(props:{
   }
 
   const putEditDriver = () => {
-    axios.put(`${process.env.REACT_APP_API}` + "/drivers", {
+    axios.put(`${process.env.REACT_APP_API}` + "/driver", {
       id: editedDriver?.no,
       name: editedDriver!.driverName,
       capacity: editedDriver?.capacity,
+    }).then((response) => {
+      if(response){
+        props.closeFunc()
+      }
+    })
+  }
+
+  const deleteEditDriver = () => {
+    if( !window.confirm('このドライバーを削除しますか？') ) {
+      return
+    }
+    axios.delete(`${process.env.REACT_APP_API}` + "/driver", { 
+      params:{ 
+        id: editedDriver?.no
+      }
     }).then((response) => {
       if(response){
         props.closeFunc()
@@ -100,16 +115,27 @@ function DriverEditDialog(props:{
             onChange={changeDriverCapacity}
           ></TextField>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={props.closeFunc}>キャンセル</Button>
           {
-            editedDriver?.no
-            ?
-            <Button onClick={putEditDriver}>決定</Button>
+          editedDriver?.no
+          ?
+            <DialogActions sx={{justifyContent: 'space-between', mb: 1}}>
+              <div>
+                <Button 
+                  onClick={deleteEditDriver} 
+                  sx={{color: "black", background: "lightgray", ml: 2}}
+                >ドライバー削除</Button>
+              </div>
+              <div>
+                <Button onClick={props.closeFunc}>キャンセル</Button>
+                <Button onClick={putEditDriver} sx={{ml: 1}}>決定</Button>
+              </div>
+            </DialogActions>
             :
-            <Button onClick={postEditDriver}>決定</Button>
+            <DialogActions sx={{mb: 1}}>
+              <Button onClick={props.closeFunc}>キャンセル</Button>
+              <Button onClick={postEditDriver}>決定</Button>
+            </DialogActions>
           }
-        </DialogActions>
       </Dialog>
     </>
   )
