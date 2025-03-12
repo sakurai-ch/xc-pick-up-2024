@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom'
 import { useCSVReader } from "react-papaparse";
 
 function Adminisrtator() {
-  // 大会情報
+  // 大会情報登録
   const [competition, setCompetition] = useState<Competition>({
     name: "",
     groupId: "",
@@ -51,12 +51,12 @@ function Adminisrtator() {
     })
   }
 
-  // 選手情報
+  // 選手情報登録
   const { CSVReader } = useCSVReader();
   interface CsvRow {[key: string]: string | number | null;}
   const [jsonData, setJsonData] = useState<CsvRow[]>([]);
 
-  const handleSendData2 = () => {
+  const postPlayers = () => {
     axios.post(`${process.env.REACT_APP_API}` + "/players", 
       { players : jsonData }, 
     {
@@ -64,6 +64,16 @@ function Adminisrtator() {
         "Content-Type": "application/json",
       },
     })
+    .then((response) => {
+      if(response){
+        console.log(response.data.data)
+      }
+    })
+  }
+
+  // 選手位置情報リセット
+  const resetPlaysersPositon = () => {
+    axios.put(`${process.env.REACT_APP_API}` + "/playersPositon")
     .then((response) => {
       if(response){
         console.log(response.data.data)
@@ -98,7 +108,7 @@ function Adminisrtator() {
       </Container>
 
       <Container disableGutters maxWidth="xs">
-        {/* 大会情報 */}
+        {/* 大会情報登録 */}
         <Grid item>
           <Box sx={{fontSize: 'h6.fontSize', fontWeight: 'bold'}}>
             大会情報登録
@@ -152,7 +162,7 @@ function Adminisrtator() {
         </Grid>
       </Container>
 
-      {/* 選手情報 */}
+      {/* 選手情報登録 */}
       <Container disableGutters maxWidth="xs">
         <Grid item  sx={{mt: 4}}>
           <Box sx={{fontSize: 'h6.fontSize', fontWeight: 'bold'}}>
@@ -162,6 +172,7 @@ function Adminisrtator() {
           {/* react-papaparse */}
           <CSVReader
             onUploadAccepted={(results: any) => {
+              console.log(results.data)
               setJsonData(results.data)
             }}
             config={{
@@ -212,7 +223,7 @@ function Adminisrtator() {
                 {/* 選手情報登録 */}
                 <Box sx={{display: 'flex', justifyContent: 'flex-end', mt: 1}}>
                   <Button 
-                    onClick={handleSendData2} 
+                    onClick={postPlayers} 
                     disabled={jsonData.length === 0}
                   >
                     登録
@@ -224,7 +235,22 @@ function Adminisrtator() {
         </Grid>
       </Container>
 
-      {/* ドライバー情報 */}
+
+      {/* 選手位置情報リセット */}
+      <Container disableGutters maxWidth="xs">
+        <Grid item  sx={{mt: 4}}>
+          <Box sx={{fontSize: 'h6.fontSize', fontWeight: 'bold'}}>
+            選手位置情報リセット
+          </Box>
+          <Box sx={{display: 'flex', justifyContent: 'flex-end', mt: 1}}>
+            <Button onClick={resetPlaysersPositon} >
+              リセット
+            </Button>
+          </Box>
+        </Grid>
+      </Container>
+
+      {/* ドライバー情報登録 */}
       <Container disableGutters maxWidth="xs">
         <Grid item  sx={{mt: 4}}>
           <Box sx={{fontSize: 'h6.fontSize', fontWeight: 'bold'}}>
