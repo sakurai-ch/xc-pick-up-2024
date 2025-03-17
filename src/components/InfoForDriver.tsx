@@ -6,7 +6,7 @@ import { Driver, FetchedDriver } from '../types/Driver'
 import PlayersStateTable from './PlayersStateTable'
 import PlayersPositionMap from './PlayersPositionMap'
 import PlayerEditDialog from './PlayerEditDialog'
-import { Button, CircularProgress, Container, Grid } from '@mui/material'
+import { Button, CircularProgress, Container, Grid, Switch } from '@mui/material'
 
 type params = {
   id: string
@@ -23,6 +23,8 @@ function InfoForDriver() {
   const [isOpenDialog, setIsOpenDialog] = useState<boolean>(false)
   const [editedPlayer, setEditedPlayer] = useState<Player>()
   const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [driverPosition, setDriverPosition] = useState<PlayerPosition>()
+  const [hasDriverPosition, setHasDriverPosition] = React.useState(false)
   
   // 編集ダイアログを開く
   const openEditPlayerDialog = (editedPlayer:Player) => {
@@ -94,17 +96,51 @@ function InfoForDriver() {
     setIsLoading(false)
   }
 
+  // ドライバー端末位置データ取得
+  const changeHasDriverPosition = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setHasDriverPosition(event.target.checked)
+  };
+
+  const fetchDriverPosition = () => {
+    if(hasDriverPosition){ 
+      navigator.geolocation.getCurrentPosition(
+        addDriverPosition, 
+        clearDriverPosition
+      )
+    } else {
+      clearDriverPosition()
+    }
+  }
+
+  const addDriverPosition = (position: GeolocationPosition) => {
+    const driverPosition: PlayerPosition = {
+      playerId: 999,
+      playerName: "回収車",
+      position: {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude,
+      }
+    }
+    setDriverPosition(driverPosition)
+  }
+
+  const clearDriverPosition = () => {
+    setDriverPosition(undefined)
+    setHasDriverPosition(false)
+  }
+
   // データ取得
   const fetchData = () => {
     fetchDrivers()
     fetchPlayers()
+    fetchDriverPosition()
   }
 
   // 更新
-  useEffect(() => {
-    fetchData()
-  }, [])
-  
+  useEffect(() => {fetchData()}, [])
+  useEffect(() => {fetchDriverPosition()}, [hasDriverPosition])
+
+
   return (
     <Container disableGutters maxWidth="xl">
       <Grid justifyContent="space-between" container>
@@ -132,12 +168,13 @@ function InfoForDriver() {
         <Grid item>
           <Button 
             variant="contained" 
-            size="small"
+            size="large"
             onClick={fetchData}
             sx={{ 
               bgcolor: 'orangered', 
               color: 'white', 
               '&:hover':{backgroundColor: 'orangered'},
+              fontSize: "20px"
             }}
           >
               更新
@@ -162,8 +199,34 @@ function InfoForDriver() {
         <Grid item xs={12}>
           {/* マップ */}
           <PlayersPositionMap
-            positions={playerPositions ? playerPositions : []}
+            positions={
+              playerPositions 
+              ? 
+              (
+                driverPosition 
+                ?  
+                [...playerPositions, driverPosition] 
+                : 
+                playerPositions
+              ) 
+              : 
+              (
+                driverPosition 
+                ?  
+                [driverPosition] 
+                : 
+                []
+              ) 
+            }
           ></PlayersPositionMap>
+        </Grid>
+
+        <Grid justifyContent="flex-end" alignItems="center" container>
+          <span>自分の位置を表示</span>
+          <Switch
+            checked={hasDriverPosition}
+            onChange={changeHasDriverPosition}
+          />
         </Grid>
 
         {/* 選手データ編集ダイアログ */}
