@@ -55,6 +55,7 @@ function Adminisrtator() {
   const { CSVReader } = useCSVReader();
   interface CsvRow {[key: string]: string | number | null;}
   const [jsonData, setJsonData] = useState<CsvRow[]>([]);
+  const removeFileRef = useRef<HTMLInputElement>(null);
 
   const postPlayers = () => {
     axios.post(`${process.env.REACT_APP_API}` + "/players", 
@@ -67,6 +68,7 @@ function Adminisrtator() {
     .then((response) => {
       if(response){
         console.log(response.data.data)
+        removeFileRef.current!.click()
       }
     })
   }
@@ -185,6 +187,7 @@ function Adminisrtator() {
             {({
               getRootProps,
               acceptedFile,
+              getRemoveFileProps,
             }: any) => (
               <>
                 <Grid container spacing={2}>
@@ -228,6 +231,11 @@ function Adminisrtator() {
                   >
                     登録
                   </Button>
+                  <input
+                    hidden
+                    ref={removeFileRef}
+                    {...getRemoveFileProps()}
+                  />
                 </Box>
               </>
             )}
