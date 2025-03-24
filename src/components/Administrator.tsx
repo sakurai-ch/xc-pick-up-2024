@@ -1,9 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Box, Button, Container, Grid, TextField } from '@mui/material'
+import { Box, Button, Container, Dialog, Grid, IconButton, TextField } from '@mui/material'
 import axios from 'axios'
 import { Competition } from '../types/Competition'
 import { Link } from 'react-router-dom'
-import { useCSVReader } from "react-papaparse";
+import { useCSVReader } from "react-papaparse"
+import CloseIcon from '@mui/icons-material/Close'
 
 function Adminisrtator() {
   // 大会情報登録
@@ -81,6 +82,18 @@ function Adminisrtator() {
         console.log(response.data.data)
       }
     })
+  }
+
+
+  // QRコード表示
+  const [isShowQR, setIsShowQR] = React.useState(false);
+
+  const openQR = () => {
+    setIsShowQR(true)
+  }
+
+  const closeQR = () => {
+    setIsShowQR(false)
   }
 
 
@@ -283,6 +296,58 @@ function Adminisrtator() {
                 本部画面へ移動
             </Button>
           </Link>
+        </Grid>
+      </Container>
+
+      {/* QRコード表示 */}
+      <Container disableGutters maxWidth="xs">
+        <Grid item  sx={{mt: 4}}>
+          <Box sx={{fontSize: 'h6.fontSize', fontWeight: 'bold'}}>
+            選手用ページQRコード
+          </Box>
+          
+          <Button 
+            variant="contained" 
+            size="small"
+            sx={{ 
+              bgcolor: 'wheat', 
+              color: 'black', 
+              '&:hover':{backgroundColor: 'wheat'},
+              mb: 4,
+              mt: 2,
+            }}
+            onClick={openQR}
+          >
+            表示
+          </Button>
+
+          <Dialog
+            fullScreen
+            open={isShowQR}
+            onClose={closeQR}
+          >
+            <IconButton
+              onClick={closeQR}
+              sx={{mt:2}}
+              disableRipple={true}
+            >
+              <CloseIcon />
+            </IconButton>
+            <Grid 
+              container 
+              height="90%" 
+              alignItems="center" 
+              justifyContent="center"
+            >
+              <Grid item>
+                <img 
+                  src='QR_player_url.png' 
+                  width="315" 
+                  height="315" 
+                />
+              </Grid>
+            </Grid>
+          </Dialog>
         </Grid>
       </Container>
     </>

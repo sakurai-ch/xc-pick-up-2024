@@ -2,7 +2,8 @@ import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { FetchedPlayer, Player, PlayerPosition } from '../types/Player'
 import PlayersStateTable from './PlayersStateTable'
-import { Button, CircularProgress, Container, Grid } from '@mui/material'
+import { Button, CircularProgress, Container, Dialog, Grid, IconButton } from '@mui/material'
+import CloseIcon from '@mui/icons-material/Close'
 
 function InfoForPlayer() {
   const [players, setPlayers] = useState<Player[]>()
@@ -39,6 +40,18 @@ function InfoForPlayer() {
       setIsLoading(false)
     })
   }
+
+  // QRコード表示
+  const [isShowQR, setIsShowQR] = React.useState(false);
+
+  const openQR = () => {
+    setIsShowQR(true)
+  }
+
+  const closeQR = () => {
+    setIsShowQR(false)
+  }
+
 
   // データ取得
   useEffect(() => {
@@ -89,6 +102,50 @@ function InfoForPlayer() {
         :
         null
       }
+
+      {/* QRコード表示 */}
+      <Button 
+        variant="contained" 
+        size="small"
+        sx={{ 
+          bgcolor: 'wheat', 
+          color: 'black', 
+          '&:hover':{backgroundColor: 'wheat'},
+          mb: 4,
+          mt: 4,
+        }}
+        onClick={openQR}
+      >
+        QRコード表示
+      </Button>
+
+      <Dialog
+        fullScreen
+        open={isShowQR}
+        onClose={closeQR}
+      >
+        <IconButton
+          onClick={closeQR}
+          sx={{mt:2}}
+          disableRipple={true}
+        >
+          <CloseIcon />
+        </IconButton>
+        <Grid 
+          container 
+          height="90%" 
+          alignItems="center" 
+          justifyContent="center"
+        >
+          <Grid item>
+            <img 
+              src='QR_player_url.png' 
+              width="315" 
+              height="315" 
+            />
+          </Grid>
+        </Grid>
+      </Dialog>
     </Container>
   )
 }
