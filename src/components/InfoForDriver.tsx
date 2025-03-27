@@ -15,7 +15,6 @@ type params = {
 function InfoForDriver() {
   const params = useParams<params>()
   const id = params.id
-  let curtDriver: Driver
 
   const [driver, setDriver] = useState<Driver>()
   const [players, setPlayers] = useState<Player[]>()
@@ -36,7 +35,7 @@ function InfoForDriver() {
   const closeEditPlayerDialog = () => {
     setIsOpenDialog(false)
     setEditedPlayer(null)
-    fetchData()
+    fetchPlayerPositions()
   }
 
   // ドライバーデータ取得
@@ -50,12 +49,6 @@ function InfoForDriver() {
             driverName: fetchedDriver.name,
             capacity: fetchedDriver.capacity,
           })
-          curtDriver = {
-            no : fetchedDriver.id,
-            trackerNo: 100,
-            driverName: fetchedDriver.name,
-            capacity: fetchedDriver.capacity,
-          }
         }
       })
     })
@@ -64,12 +57,12 @@ function InfoForDriver() {
   // 選手データ取得
   const fetchPlayers = async() => {
     setIsLoading(true)
-    let players: Player[] = []
-    let playerPositions: PlayerPosition[] = []
+    let selectedPlayers: Player[] = []
+    let selectedPlayerPositions: PlayerPosition[] = []
     await axios.get(`${process.env.REACT_APP_API}` + "/players").then((response) => {
       response.data.data.map((fetchedPlayer: FetchedPlayer) => {
-        if(fetchedPlayer?.driver==curtDriver?.driverName && fetchedPlayer?.state!="未"){
-          players.push({
+        if(fetchedPlayer?.driver==driver?.driverName && fetchedPlayer?.state!="未"){
+          selectedPlayers.push({
             id : fetchedPlayer.id,
             no : fetchedPlayer.no,
             trackerNo: fetchedPlayer.comp_id,
@@ -80,19 +73,21 @@ function InfoForDriver() {
             mapUrl: fetchedPlayer.map,
             driverName: fetchedPlayer.driver,
           })
-          playerPositions.push({
-            playerId: fetchedPlayer.id,
-            playerName: fetchedPlayer.name,
-            position: {
-              lat: Number(fetchedPlayer.latitude),
-              lng: Number(fetchedPlayer.longitude),
-            }
-          })
+          if(fetchedPlayer?.state!="済"){
+            selectedPlayerPositions.push({
+              playerId: fetchedPlayer.id,
+              playerName: fetchedPlayer.name,
+              position: {
+                lat: Number(fetchedPlayer.latitude),
+                lng: Number(fetchedPlayer.longitude),
+              }
+            })
+          }
         }
       })
     })
-    setPlayers(players)
-    setPlayerPositions(playerPositions)
+    setPlayers(selectedPlayers)
+    setPlayerPositions(selectedPlayerPositions)
     setIsLoading(false)
   }
 
@@ -129,15 +124,15 @@ function InfoForDriver() {
     setHasDriverPosition(false)
   }
 
-  // データ取得
-  const fetchData = () => {
-    fetchDrivers()
+  // 選手データ取得
+  const fetchPlayerPositions = () => {
     fetchPlayers()
     fetchDriverPosition()
   }
 
   // 更新
-  useEffect(() => {fetchData()}, [])
+  useEffect(() => {fetchDrivers()}, [])
+  useEffect(() => {fetchPlayerPositions()}, [driver])
   useEffect(() => {fetchDriverPosition()}, [hasDriverPosition])
 
 
@@ -169,7 +164,7 @@ function InfoForDriver() {
           <Button 
             variant="contained" 
             size="large"
-            onClick={fetchData}
+            onClick={fetchPlayerPositions}
             sx={{ 
               bgcolor: 'orangered', 
               color: 'white', 
