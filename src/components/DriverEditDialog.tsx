@@ -17,17 +17,18 @@ function DriverEditDialog(props:{
     }))
   }
 
-  const changeDriverCapacity = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setEditedDriver(driver => ({
-      ...driver!, 
-      capacity: Number((event.target as HTMLInputElement).value)
-    }))
-  }
+  // const changeDriverCapacity = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   setEditedDriver(driver => ({
+  //     ...driver!, 
+  //     capacity: Number((event.target as HTMLInputElement).value)
+  //   }))
+  // }
 
   const postEditDriver = () => {
     axios.post(`${process.env.REACT_APP_API}` + "/driver", {
       name: editedDriver!.driverName,
-      capacity: editedDriver?.capacity,
+      // capacity: editedDriver?.capacity,
+      capacity: 1,
     }).then((response) => {
       if(response){
         props.closeFunc()
@@ -39,7 +40,8 @@ function DriverEditDialog(props:{
     axios.put(`${process.env.REACT_APP_API}` + "/driver", {
       id: editedDriver?.no,
       name: editedDriver!.driverName,
-      capacity: editedDriver?.capacity,
+      // capacity: editedDriver?.capacity,
+      capacity: 1,
     }).then((response) => {
       if(response){
         props.closeFunc()
@@ -82,8 +84,8 @@ function DriverEditDialog(props:{
             ★選手画面には入力した名前の先頭2文字が表示されます<br />
             ★選手を配車した状態でドライバー名を変更しないこと
           </p>
-          {/* 名前 */}
-          <TextField
+          {/* ID */}
+          {/* <TextField
             margin="normal"
             id="ID"
             label="ID（編集不可）"
@@ -91,7 +93,7 @@ function DriverEditDialog(props:{
             variant="standard"
             value={editedDriver ? editedDriver.no : ""}
             disabled
-          ></TextField>
+          ></TextField> */}
 
           {/* 名前 */}
           <TextField
@@ -105,7 +107,7 @@ function DriverEditDialog(props:{
           ></TextField>
 
           {/* 定員 */}
-          <TextField
+          {/* <TextField
             margin="normal"
             id="capacity"
             label="定員（半角数値のみ入力可）"
@@ -113,7 +115,7 @@ function DriverEditDialog(props:{
             variant="standard"
             value={editedDriver ? editedDriver.capacity : null}
             onChange={changeDriverCapacity}
-          ></TextField>
+          ></TextField> */}
         </DialogContent>
           {
           editedDriver?.no

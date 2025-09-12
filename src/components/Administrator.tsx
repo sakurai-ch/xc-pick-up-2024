@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Box, Button, Container, Dialog, Grid, IconButton, TextField } from '@mui/material'
+import { Box, Button, Container, Dialog, Grid, IconButton, TextField, MenuItem } from '@mui/material'
 import axios from 'axios'
-import { Competition } from '../types/Competition'
+import { Competition, ReferencePoint } from '../types/Competition'
 import { Link } from 'react-router-dom'
 import { useCSVReader } from "react-papaparse"
 import CloseIcon from '@mui/icons-material/Close'
@@ -12,7 +12,11 @@ function Adminisrtator() {
     name: "",
     groupId: "",
     token: "",
+    referencePointId: "",
   })
+
+  // 測定基準
+  const [referencePoints, setReferencePoints] = useState<ReferencePoint[]>([])
 
   const setCompetitionName = (event: React.ChangeEvent<HTMLInputElement>) => {
     setCompetition(competition => ({
@@ -35,11 +39,19 @@ function Adminisrtator() {
     }))
   }
 
+  const setCompetitionReferencePointId = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setCompetition(competition => ({
+      ...competition!,
+      referencePointId: (event.target as HTMLInputElement).value
+    }))
+  }
+
   const postCompetition = () => {
     axios.post(`${process.env.REACT_APP_API}` + "/competition", {
       name: competition!.name,
       groupId: Number(competition!.groupId),
       token: competition!.token,
+      referencePointId: competition!.referencePointId,
     }).then((response) => {
       if(response){
         console.log(response.data.data)
@@ -47,9 +59,13 @@ function Adminisrtator() {
           name: "", 
           groupId: "",
           token: "",
+          referencePointId: "",
         }))
       }
     })
+    setTimeout(() => {
+      window.location.reload();
+    }, 3000);
   }
 
   // 選手情報登録
@@ -76,6 +92,9 @@ function Adminisrtator() {
 
   // 選手位置情報リセット
   const resetPlaysersPositon = () => {
+    if (!window.confirm("選手位置情報リセット")) {
+      return;
+    }
     axios.put(`${process.env.REACT_APP_API}` + "/playersPositon")
     .then((response) => {
       if(response){
@@ -83,7 +102,6 @@ function Adminisrtator() {
       }
     })
   }
-
 
   // QRコード表示
   const [isShowQR, setIsShowQR] = React.useState(false);
@@ -95,6 +113,18 @@ function Adminisrtator() {
   const closeQR = () => {
     setIsShowQR(false)
   }
+
+
+  useEffect(() => {
+    axios
+      .get(`${process.env.REACT_APP_API}` + "/referencePoints")
+      .then((response) => {
+        setReferencePoints(response.data.data)
+      })
+      .catch((error) => {
+        console.error(error)
+      })
+  }, [])
 
 
   return (
@@ -164,6 +194,30 @@ function Adminisrtator() {
             value={competition ? competition.token : null}
             onChange={setCompetitionToken}
           ></TextField>
+
+          {/* 測定基準点 */}
+          <TextField
+            margin="normal"
+            sx={{mt: 0}}
+            id="referencePoint"
+            label="測定基準"
+            fullWidth
+            variant="standard"
+            select
+            SelectProps={{
+              MenuProps: {
+                PaperProps: {
+                  sx: { bgcolor: '#faf3e3' }
+                }
+              }
+            }}
+            value={competition?.referencePointId ?? ""}
+            onChange={setCompetitionReferencePointId}
+          >
+            {referencePoints.map((rp) => (
+              <MenuItem key={rp.id} value={String(rp.id)}>{rp.name}</MenuItem>
+            ))}
+          </TextField>
           
           {/* 登録ボタン */}
           <Box sx={{display: 'flex', justifyContent: 'flex-end', mt: 1}}>
@@ -277,6 +331,7 @@ function Adminisrtator() {
           <Box sx={{fontSize: 'h6.fontSize', fontWeight: 'bold'}}>
             ドライバー情報登録
           </Box>
+          <span>※本部画面から登録</span><br/>
 
           <Link
             to="/headquarters"
