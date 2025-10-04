@@ -83,7 +83,8 @@ function PlayerEditDialog(props:{
       >
         {/* 選手名 */}
         <DialogTitle>
-          {editedPlayer ? ("No"+editedPlayer.no+" / Tracker"+editedPlayer.trackerNo) : ""}<br></br>
+          {/* {editedPlayer ? ("No"+editedPlayer.no+" / Tracker"+editedPlayer.trackerNo) : ""}<br></br> */}
+          {editedPlayer ? (editedPlayer.no) : ""}<br></br>
           {editedPlayer ? (editedPlayer.playerName) : ""}
         </DialogTitle>
 

@@ -134,7 +134,7 @@ function InfoForHeadquarters() {
       </Grid>
 
 
-      <Grid container spacing={4}>
+      <Grid container spacing={4} sx={{mb:5}}>
         {/* 配車前 */} 
         <Grid item xs={12} md={6}>
           <p>■未手配</p>

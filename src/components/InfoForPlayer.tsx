@@ -47,7 +47,7 @@ function InfoForPlayer() {
   }, [])
   
   return (
-    <Container disableGutters maxWidth="xl">
+    <Container disableGutters maxWidth="xl" sx={{mb:2}}>
       <Grid justifyContent="end" container>
         {/* 更新ボタン */}
         <Grid item>
